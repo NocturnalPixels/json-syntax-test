@@ -128,14 +128,20 @@ mod Tokenizer {
 					break;
 
 				case '"':
+					tokens.push(tokenizer.parse_string());
 					break;
 
 				default:
 					if (tokenizer.previous().is_numeric()) {
 						tokens.push(tokenizer.parse_number());
+						break;
+					}
+					else if (tokenizer.previous().is_alpha()) {
+						tokens.push(tokenizer.parse_identifier());
+						break;
 					}
 
-					break;
+					throw error("Unexpected character in json.");
 			}
 		}
 	}
