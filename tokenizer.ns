@@ -7,7 +7,7 @@ struct Tokenizer {
 }
 
 mod Tokenizer {
-	fn new(text: string) {
+	fn new(text: string): Tokenizer {
 		return Tokenizer { 0, 1, text };
 	}
 
