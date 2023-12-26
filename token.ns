@@ -1,0 +1,22 @@
+enum TokenType {
+	left_brace, right_brace, left_bracket, right_bracket,
+
+	comma, colon, semicolon,
+
+	string, number,
+
+	true_l, false_l, null_l
+};
+
+struct Token {
+	tok_type: TokenType,
+	value: double | string | null,
+	lexeme: string,
+	line: int
+}
+
+mod Token {
+	fn new(tok_type: TokenType, lexeme: string, line: int, value: double | string | null = null): Token {
+		return Token { tok_type, value, lexeme, line };
+	}
+}

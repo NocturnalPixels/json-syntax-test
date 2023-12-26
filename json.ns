@@ -1,0 +1,18 @@
+include { flag } from "std:bit_field" as *;
+
+namespace Json;
+
+enum JsonParseOptions: flag {
+	allow_trailing_commas = 0
+} 
+
+fn parse(json: string, options: JsonParseOptions) {
+	tokenizer: Tokenizer = Tokenizer.new(json);
+	tokens: Token[] = tokenizer.tokenize();
+}
+
+fn to_json(object: map<string, dynamic>) {
+
+}
+
+export { parse, to_json };

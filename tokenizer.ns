@@ -1,0 +1,142 @@
+namespace Json;
+
+struct Tokenizer {
+	current: int;
+	line: int;
+	text: string;	
+}
+
+mod Tokenizer {
+	fn new(text: string) {
+		return Tokenizer { 0, 1, text };
+	}
+
+	fn at_end(tokenizer: self): bool {
+		return tokenizer.current >= tokenizer.text.len();
+	}
+
+	fn previous(tokenizer: self): char {
+		return tokenizer.text[tokenizer.current - 1];
+	}
+
+	fn peek(tokenizer: self): char {
+		return tokenizer.text[tokenizer.current];
+	}
+
+	fn advance(tokenizer: self): char {
+		if (tokenizerat_end()) throw error("Json ended unexpectedly.");
+		return tokenizer.text[tokenizer.current++];
+	}
+
+	fn parse_number(tokenizer: self): Token {
+		value: string = tokenizer.previous().str();
+
+		while (tokenizer.peek().is_numeric()) {
+			value += tokenizer.advance();
+		}
+
+		if (tokenizer.peek() == '.') {
+			value += advance();
+
+			while (tokenizer.peek().is_numeric()) {
+				value += tokenizer.advance();
+			}
+		}
+
+		if (||(tokenizer.peek() == &['E', 'e'])) {
+			value += advance();
+
+			if (&&(tokenizer.peek() != &['-', '+'])) {
+				throw error("Expected finishing exponent.");
+			}
+
+			value += advance();
+
+			while (tokenizer.peek().is_numeric()) {
+				value += tokenizer.advance();
+			}
+		}
+
+		return Token.new(TokenType.number, value, tokenizer.line, double.parse(value));
+	}
+
+	fn parse_string(tokenizer: self): Token {
+		value: string = tokenizer.previous().str();
+
+		while (tokenizer.peek() != '"') {
+			value += tokenizer.advance();
+		}
+
+		tokenizer.advance();
+
+		return Token.new(TokenType.string, value, tokenizer.line, value);
+	}
+
+	fn parse_identifier(tokenizer: self): Token {
+		value: string = tokenizer.previous().str();
+
+		while (tokenizer.peek().is_alpha()) {
+			value += tokenizer.advance();
+		}
+
+		return switch(value) {
+			"true": Token.new(TokenType.true_l, value, tokenizer.line),
+			"false": Token.new(TokenType.false_l, value, tokenizer.line),
+			"null": Token.new(TokenType.null_l, value, tokenizer.line),
+		}
+	}
+
+	fn tokenize(tokenizer: self): Token[] {
+		tokens: Token[] = [];
+
+		while (!tokenizer.at_end()) {
+			switch (tokenizer.advance()) {
+				case ' ':
+				case '\r':
+				case '\t:
+					break;
+
+				case '\n': 
+					tokenizer.line++;
+					break;
+
+				case '{':
+					tokens.push(Token.new(TokenType.left_brace, "{", tokenizer.line));
+					break;
+				case '}':
+					tokens.push(Token.new(TokenType.right_brace, "}", tokenizer.line));
+					break;
+				case '[':
+					tokens.push(Token.new(TokenType.left_bracket, "[", tokenizer.line));
+					break;
+				case ']':
+					tokens.push(Token.new(TokenType.right_bracket, "]", tokenizer.line));
+					break;
+
+				case ',':
+					tokens.push(Token.new(TokenType.comma, ",", tokenizer.line));
+					break;
+				case ':':
+					tokens.push(Token.new(TokenType.colon, ":", tokenizer.line));
+					break;
+				case ';':
+					tokens.push(Token.new(TokenType.semicolon, ";", tokenizer.line));
+					break;
+
+				case '-':
+					tokens.push(tokenizer.parse_number());
+					break;
+
+				case '"':
+					break;
+
+				default:
+					if (tokenizer.previous().is_numeric()) {
+						tokens.push(tokenizer.parse_number());
+					}
+
+					break;
+			}
+		}
+	}
+}
