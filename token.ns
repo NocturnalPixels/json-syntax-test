@@ -1,3 +1,5 @@
+namespace Json;
+
 enum TokenType {
 	left_brace, right_brace, left_bracket, right_bracket,
 
