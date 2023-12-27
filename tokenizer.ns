@@ -36,7 +36,7 @@ mod Tokenizer {
 		}
 
 		if (tokenizer.peek() == '.') {
-			value += advance();
+			value += tokenizer.advance();
 
 			while (tokenizer.peek().is_numeric()) {
 				value += tokenizer.advance();
@@ -44,13 +44,13 @@ mod Tokenizer {
 		}
 
 		if (||(tokenizer.peek() == &['E', 'e'])) {
-			value += advance();
+			value += tokenizer.advance();
 
 			if (&&(tokenizer.peek() != &['-', '+'])) {
 				throw error("Expected finishing exponent.");
 			}
 
-			value += advance();
+			value += tokenizer.advance();
 
 			while (tokenizer.peek().is_numeric()) {
 				value += tokenizer.advance();
