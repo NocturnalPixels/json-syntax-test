@@ -1,5 +1,3 @@
-namespace Json;
-
 struct Tokenizer {
 	current: int;
 	line: int;

@@ -1,7 +1,5 @@
 include { flag } from "std:bit_field" as *;
 
-namespace Json;
-
 enum JsonParseOptions: flag {
 	allow_trailing_commas = 1
 } 
