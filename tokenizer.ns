@@ -24,7 +24,7 @@ mod Tokenizer {
 	}
 
 	fn advance(tokenizer: self): char {
-		if (tokenizerat_end()) throw error("Json ended unexpectedly.");
+		if (tokenizer.at_end()) throw error("Json ended unexpectedly.");
 		return tokenizer.text[tokenizer.current++];
 	}
 
