@@ -74,7 +74,7 @@ mod Parser {
         while (parser.peek().tok_type != TokenType.right_brace) {
             const key: Token = parser.consume(TokenType.string);
 
-            table[key.value] = parser.parse_property(options);
+            ret[key.value] = parser.parse_property(options);
         }
 
         parser.consume(TokenType.right_brace);
