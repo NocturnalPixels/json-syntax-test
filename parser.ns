@@ -65,7 +65,7 @@ mod Parser {
                 case TokenType.null_l: null
             }, 
             JsonProperty|x: JsonProperty| { parser.consume_comma(); return x; }
-        )
+        );
     }
 
     fn parse_object(parser: self, options: JsonParseOptions): table {
