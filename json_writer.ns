@@ -8,7 +8,7 @@ fn write_json(map: table): string {
 
 fn write_property(prop: JsonProperty, str: &string): void {
     if (prop is string) str += "\"$prop\",";
-    else if (prop is double || prop is bool || prop is null) str += "$prop,";
+    else if (||(prop is &[double, bool, null])) str += "$prop,";
     else if (prop is table) write_map(prop, str);
     else if (prop is JsonProperty[]) write_array(prop, str);
 }
