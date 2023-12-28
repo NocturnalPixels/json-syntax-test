@@ -21,17 +21,17 @@ mod Parser {
     }
 
     fn previous(parser: self): char {
-		return parser.tokens[parser.current - 1];
-	}
+        return parser.tokens[parser.current - 1];
+    }
 
-	fn peek(parser: self): char {
-		return parser.text[parser.current];
-	}
+    fn peek(parser: self): char {
+        return parser.text[parser.current];
+    }
 
-	fn advance(parser: self): char {
-		if (parser.at_end()) throw error("Json ended unexpectedly.");
-		return parser.text[parser.current++];
-	}
+    fn advance(parser: self): char {
+        if (parser.at_end()) throw error("Json ended unexpectedly.");
+        return parser.text[parser.current++];
+    }
 
     fn consume(parser: self, tok_type: TokenType): Token {
         if (parser.advance().tok_type != tok_type) {
