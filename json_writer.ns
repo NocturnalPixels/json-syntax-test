@@ -23,7 +23,7 @@ fn write_map(map: table, str: &string): void {
     str += "},";
 }
 
-fn write_array(array: JsonProperty[], str: &string) {
+fn write_array(array: JsonProperty[], str: &string): void {
     str += "[";
 
     for (v: JsonProperty in array) {
