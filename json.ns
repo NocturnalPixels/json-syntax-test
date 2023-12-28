@@ -6,7 +6,7 @@ fn parse(json: string, options: JsonParseOptions): table {
 }
 
 fn to_json(object: table): string {
-	throw error("Not implemented.");
+	return write_json(object);
 }
 
 export { parse, to_json };
