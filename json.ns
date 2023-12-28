@@ -1,17 +1,11 @@
-include { flag } from "std:bit_field" as *;
-
-enum JsonParseOptions: flag {
-	allow_trailing_commas = 1
-} 
-
 fn parse(json: string, options: JsonParseOptions): table {
 	tokenizer: Tokenizer = Tokenizer.new(json);
 	tokens: Token[] = tokenizer.tokenize();
 	parser: Parser = Parser.new(tokens);
-	return parser.parse();
+	return parser.parse(options);
 }
 
-fn to_json(object: map<string, dynamic>): string {
+fn to_json(object: table): string {
 	throw error("Not implemented.");
 }
 

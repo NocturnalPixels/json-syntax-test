@@ -1,0 +1,96 @@
+include { flag } from "std:bit_field" as *;
+
+enum JsonParseOptions: flag {
+	allow_trailing_commas = 1
+}
+
+type JsonProperty = string | double | bool | table | JsonProperty[] | null;
+
+struct Parser {
+    current: int;
+    tokens: Token[];
+}
+
+mod Parser {
+    fn new(tokens: Token[]): Parser {
+        return Parser { 0, tokens };
+    }
+
+    fn at_end(parser: self): bool {
+        return parser.current >= parser.tokens.count();
+    }
+
+    fn previous(parser: self): char {
+		return parser.tokens[parser.current - 1];
+	}
+
+	fn peek(parser: self): char {
+		return parser.text[parser.current];
+	}
+
+	fn advance(parser: self): char {
+		if (parser.at_end()) throw error("Json ended unexpectedly.");
+		return parser.text[parser.current++];
+	}
+
+    fn consume(parser: self, tok_type: TokenType): Token {
+        if (parser.advance().tok_type != tok_type) {
+            throw error("Expected $tok_type.");
+        }
+        return parser.previous();
+    }
+
+    fn consume_comma(parser: self, options: JsonParseOptions) {
+        if (flag.get(options, JsonParseOptions.allow_trailing_commas)) {
+            if (peek().tok_type == TokenType.comma) {
+                consume(TokenType.comma);
+            }
+        }
+    }
+
+    fn parse(parser: self, options: JsonParseOptions): table {
+        parser.consume(TokenType.left_brace);
+
+        return parser.parse_object(options);
+    }
+
+    fn parse_property(parser: self, options: JsonParseOptions): JsonProperty {
+        return transform(
+            switch(parser.advance().tok_type) {
+                case TokenType.left_brace: parser.parse_object(options),
+                case TokenType.left_bracket: parser.parse_array(options),
+                case TokenType.string | TokenType.number: parser.previous().value,
+                case TokenType.true_l: true,
+                case TokenType.false_l: false,
+                case TokenType.null_l: null
+            }, 
+            JsonProperty|x: JsonProperty| { parser.consume_comma(); return x; }
+        )
+    }
+
+    fn parse_object(parser: self, options: JsonParseOptions): table {
+        let ret: table = {};
+
+        while (parser.peek().tok_type != TokenType.right_brace) {
+            const key: Token = parser.consume(TokenType.string);
+
+            table[key.value] = parser.parse_property(options);
+        }
+
+        parser.consume(TokenType.right_brace);
+
+        return ret;
+    }
+
+    fn parse_array(parser: self, options: JsonParseOptions): JsonProperty[] {
+        let ret: JsonProperty[] = [];
+
+        while (parser.peek().tok_type != TokenType.right_bracket) {
+            ret.push(parser.parse_property(options));
+        }
+
+        parser.consume(TokenType.right_bracket);
+
+        return ret;
+    }
+}

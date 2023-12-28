@@ -8,15 +8,17 @@ enum TokenType {
 	true_l, false_l, null_l
 };
 
+type TokenValue = double | string | null;
+
 struct Token {
 	tok_type: TokenType,
-	value: double | string | null,
+	value: TokenValue,
 	lexeme: string,
 	line: int
 }
 
 mod Token {
-	fn new(tok_type: TokenType, lexeme: string, line: int, value: double | string | null = null): Token {
+	fn new(tok_type: TokenType, lexeme: string, line: int, value: TokenValue = null): Token {
 		return Token { tok_type, value, lexeme, line };
 	}
 }
